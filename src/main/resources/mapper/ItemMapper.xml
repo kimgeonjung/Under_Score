@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.du.pproject11.mapper.ItemMapper">
+    <select id="findAllCategories" resultType="java.lang.String">
+        SELECT DISTINCT category FROM item
+    </select>
+
+    <select id="findItemsByArrivals" resultType="edu.du.pproject11.dto.ItemList">
+        SELECT i.id, i.name, i.price, ii.image_path as imagePath
+        FROM item i, item_image ii
+        WHERE i.id = ii.item_id
+          AND i.season = '24FW'
+          AND ii.id = (
+            SELECT MIN(id)
+            FROM item_image
+            WHERE item_id = i.id
+        )
+    </select>
+
+    <select id="findItemsBySale" resultType="edu.du.pproject11.dto.ItemList">
+        SELECT i.id, i.name, i.price, ii.image_path as imagePath
+        FROM item i, item_image ii
+        WHERE i.id = ii.item_id
+          AND i.season = 'Sale'
+          AND ii.id = (
+            SELECT MIN(id)
+            FROM item_image
+            WHERE item_id = i.id
+        )
+    </select>
+
+    <select id="findItemsByArrivalsAndCategory" resultType="edu.du.pproject11.dto.ItemList">
+        SELECT i.id, i.name, i.price, ii.image_path as imagePath
+        FROM item i, item_image ii
+        WHERE i.id = ii.item_id
+          AND i.season = '24FW'
+          AND i.category = #{category}
+          AND ii.id = (
+            SELECT MIN(id)
+            FROM item_image
+            WHERE item_id = i.id
+        );
+    </select>
+
+    <select id="findItemsBySaleAndCategory" resultType="edu.du.pproject11.dto.ItemList">
+        SELECT i.id, i.name, i.price, ii.image_path as imagePath
+        FROM item i, item_image ii
+        WHERE i.id = ii.item_id
+          AND i.season = 'Sale'
+          AND i.category = #{category}
+          AND ii.id = (
+            SELECT MIN(id)
+            FROM item_image
+            WHERE item_id = i.id
+        );
+    </select>
+
+    <select id="findItemImageByCategory" resultType="edu.du.pproject11.dto.ItemList" parameterType="String">
+        SELECT i.name, i.price, i.id, ii.image_path
+            FROM item i
+            JOIN item_image ii ON i.id = ii.item_id
+            WHERE i.category = #{category}
+            AND ii.id = (
+                SELECT MIN(id)
+                FROM item_image
+                WHERE item_id = i.id
+            );
+    </select>
+
+    <select id="getAllItems" resultType="edu.du.pproject11.dto.ItemList">
+        SELECT i.id, i.name, i.price, ii.image_path as imagePath
+        FROM item i, item_image ii
+        WHERE i.id = ii.item_id
+          AND ii.id = (
+            SELECT MIN(id)
+            FROM item_image
+            WHERE item_id = i.id
+        );
+    </select>
+
+    <select id="findItemById" resultType="edu.du.pproject11.dto.ItemDetail">
+        SELECT id, name, description, price, quantity
+        FROM item
+        where id = #{id}
+    </select>
+
+    <select id="findItemImageById" resultType="string">
+        select image_path as imagePath
+          from item_image
+         where item_id = #{id}
+    </select>
+
+    <select id="getCartItemById" resultType="edu.du.pproject11.entity.Item">
+        SELECT i.id, i.name, i.price, ii.image_path AS imagePath
+        FROM item i
+                 JOIN item_image ii ON i.id = ii.item_id
+        WHERE i.id = #{id}
+          AND ii.id = (
+            SELECT MIN(id)
+            FROM item_image
+            WHERE item_id = i.id
+        );
+    </select>
+
+</mapper>

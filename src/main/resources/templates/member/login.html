@@ -1,0 +1,96 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:fragment="loginModal">
+<body>
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span id="closeLoginModal" class="close">&times;</span>
+    <div class="container row" style="display: flex">
+      <h4>Login</h4>
+      <hr />
+      <form method="post" id="loginForm" action="/login">
+        <label for="id">ID</label>
+        <input class="my-3" type="text" id="id" name="loginId" style="width: 100%">
+
+        <label for="pw">PASSWORD</label>
+        <input class="my-3" type="password" id="pw" name="password" style="width: 100%">
+        <span><input type="checkbox" id="rememberId" name="rememberId" /> Remember ID</span>
+        <br/>
+        <div id="errorMsg" th:text="${errorMessage}" style="display:none; color: red;"></div>
+        <button type="submit" class="btnc my-5">Login</button>
+
+        <p><a href="#" id="findLoginIdModal">Forget your ID</a> / <a href="#" id="changePwModal">PASSWORD?</a></p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="modal2" class="modal">
+  <div class="modal-content">
+    <span id="closeLoginModal2" class="close">&times;</span>
+    <div class="container row" style="display: flex">
+      <h4>Find Login Id</h4>
+      <hr />
+      <form method="post" id="findLoginId" action="/api/member/findLoginId">
+        <label for="name">이름</label>
+        <input class="my-3" type="text" id="name" name="name" style="width: 100%">
+
+        <label for="email">이메일</label>
+        <input class="my-3" type="text" id="email" name="email" style="width: 100%">
+        <br/>
+        <button type="submit" class="btnc my-5">아이디 찾기</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="modal3" class="modal">
+  <div class="modal-content">
+    <span id="closeLoginModal3" class="close">&times;</span>
+    <div class="container row" style="display: flex">
+      <h4>임시 비밀번호 발급</h4>
+      <hr />
+      <form method="post" id="findPw" action="/api/member/changePw">
+        <label for="loginId">로그인 ID</label>
+        <input class="my-3" type="text" id="loginId" name="name" style="width: 100%">
+
+        <label for="email">이메일</label>
+        <input class="my-3" type="text" id="email3" name="email" style="width: 100%">
+        <br/>
+        <button type="submit" class="btnc my-5">임시 비밀번호 발급</button>
+
+      </form>
+    </div>
+  </div>
+</div>
+<script src="/js/loginModal.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // 페이지 로드 시 쿠키에서 ID 값 읽어오기
+    const loginId = Cookies.get('loginId');
+    if (loginId) {
+      $('#id').val(loginId); // 로그인 ID 입력란에 쿠키값 자동 입력
+      $('#rememberId').prop('checked', true); // Remember Me 체크박스 체크
+    }
+
+    // 로그인 폼 제출 시 쿠키 설정
+    $('#loginForm').submit(function(e) {
+      e.preventDefault(); // 폼 기본 제출 동작 방지
+
+      const rememberId = $('#rememberId').is(':checked');
+      const loginIdValue = $('#id').val();
+
+      if (rememberId) {
+        // Remember Me 체크되었으면 로그인 ID를 쿠키로 저장
+        Cookies.set('loginId', loginIdValue, { expires: 30, path: '/' });
+      } else {
+        // Remember Me 체크되지 않으면 쿠키 삭제
+        Cookies.remove('loginId', { path: '/' });
+      }
+    });
+  });
+</script>
+</body>
+</th:block>

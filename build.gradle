@@ -1,0 +1,54 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.16'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'edu.du'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.1'
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:2.3.1'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation group: 'nz.net.ultraq.thymeleaf', name: 'thymeleaf-layout-dialect', version: '3.0.0'
+    implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-java8time', version: '3.0.4.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4:1.16'
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    implementation 'org.springframework.security:spring-security-crypto'
+
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'io.github.cdimascio:dotenv-java:3.0.2'
+
+
+//    implementation group: 'org.springframework.security.oauth.boot', name: 'spring-security-oauth2-autoconfigure', version: '2.6.8'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+//    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+//    testImplementation 'org.springframework.security:spring-security-test'
+//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

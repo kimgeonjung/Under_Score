@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+  <link th:href="@{/css/styles.css}" rel="stylesheet" />
+  <link th:href="@{/css/main.css}" rel="stylesheet" />
+  <link th:href="@{/css/page.css}" rel="stylesheet" />
+  <link th:href="@{/css/header.css}" rel="stylesheet" />
+  <title>Title</title>
+  <style>
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      height: 100vh;
+    }
+
+    .login-container {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .mw{
+      max-width: 450px;
+    }
+    .to-main{font: bold 36px/1 "arial"; color: #444;}
+  </style>
+</head>
+<body>
+<main class="main-content">
+  <div class="login-container eng bt">
+    <div class="d-flex justify-content-center align-items-center">
+      <h3 class="to-main"><u><a th:href="@{/}">Under Score</a></u></h3>
+    </div>
+    <hr>
+    <div class="form-group eng">
+      <form action="/member/update" th:object="${member}" method="post">
+        <input type="hidden" th:value="*{id}">
+        <div class="form-group mb-3 d-flex justify-content-between align-items-center">
+          <label for="name">이름</label>
+          <input class="form-control mw" type="text" id="name" th:field="*{name}" name="name" >
+        </div>
+
+        <div class="form-group mb-3 d-flex justify-content-between align-items-center">
+          <label for="loginId">아이디</label>
+          <input class="form-control mw" type="text" id="loginId" th:field="*{loginId}" name="loginId" readonly>
+        </div>
+
+        <div class="form-group mb-3 d-flex justify-content-between align-items-center">
+          <label for="phone">전화번호</label>
+          <input class="form-control mw" type="tel" id="phone" th:field="*{phone}" name="phone">
+        </div>
+
+        <div class="form-group mb-3 d-flex justify-content-between align-items-center">
+          <label for="email">이메일</label>
+          <input class="form-control mw" type="email" id="email" th:field="*{email}" name="email" readonly>
+        </div>
+
+        <div class="form-group mb-3 d-flex justify-content-between align-items-center">
+          <label for="address">주소</label>
+          <input class="form-control mw" type="text" id="address" th:field="*{address}" name="address" readonly>
+        </div>
+
+        <button type="submit" class="btnc mt-3">변경</button>
+      </form>
+    <hr>
+      <form id="chPw" action="/api/member/changePw" th:object="${member}" method="post">
+        <input type="hidden" th:value="*{loginId}">
+        <div class="form-group mb-3 d-flex justify-content-between align-items-center">
+          <label for="oldPw">현재<br>비밀번호</label>
+          <input class="form-control mw" type="password" id="oldPw" name="oldPw" placeholder="현재 비밀번호를 입력하세요" required>
+        </div>
+
+        <div class="form-group mb-3 d-flex justify-content-between align-items-center">
+          <label for="newPw">새<br>비밀번호</label>
+          <input class="form-control mw" type="password" id="newPw" name="newPw" placeholder="새 비밀번호를 입력하세요" required>
+        </div>
+
+        <div class="form-group mb-3 d-flex justify-content-between align-items-center">
+          <label for="confirmPw">비밀번호<br>확인</label>
+          <input class="form-control mw" type="password" id="confirmPw" name="confirmPw" placeholder="새 비밀번호를 다시 입력하세요" required>
+        </div>
+
+        <button type="submit" class="btna mt-3">비밀번호 변경</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+  <script>
+    $('#chPw').on('submit', function (event) {
+      event.preventDefault();
+      const data = {
+        loginId: $('#loginId').val(),
+        oldPw: $('#oldPw').val(),
+        newPw: $('#newPw').val(),
+        confirmPw: $('#confirmPw').val(),
+      };
+
+      $.ajax({
+        url: '/api/member/changePw',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function (response) {
+          alert('비밀번호 변경 성공. 다시 로그인 해주세요.');
+          window.location.href = "/main";
+        },
+        error: function (error) {
+          alert('비밀번호 변경 실패');
+        }
+      });
+    });
+  </script>
+</main>
+</body>
+</html>
