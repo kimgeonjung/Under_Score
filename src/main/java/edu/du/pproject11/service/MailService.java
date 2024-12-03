@@ -1,7 +1,7 @@
 package edu.du.pproject11.service;
 
+import edu.du.pproject11.config.mail.MailConst;
 import edu.du.pproject11.dto.VerificationCode;
-import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
@@ -17,14 +17,10 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class MailService {
-    static Dotenv dotenv = Dotenv.load();
-    static String mailUsername = dotenv.get("mail_username");
-
     private final JavaMailSender mailSender;
-    private static final String senderEmail = mailUsername;
+    private static final String senderEmail = MailConst.mailSenderName;
     private final JavaMailSender javaMailSender;
 
     private Map<String, VerificationCode> verificationCode = new HashMap<>();

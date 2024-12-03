@@ -1,5 +1,6 @@
 package edu.du.pproject11.service;
 
+import edu.du.pproject11.config.mail.MailConst;
 import edu.du.pproject11.dto.ChangePwRequest;
 import edu.du.pproject11.dto.FindPwRequest;
 import edu.du.pproject11.dto.FindPwResponse;
@@ -9,7 +10,6 @@ import edu.du.pproject11.exception.BadCredentialsException;
 import edu.du.pproject11.exception.InvalidLoginException;
 import edu.du.pproject11.repository.CartRepository;
 import edu.du.pproject11.repository.MemberRepository;
-import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailSender;
@@ -21,7 +21,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import javax.mail.internet.MimeMessage;
 import java.util.Optional;
 
 @Service
@@ -34,7 +33,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final MailSender mailSender;
 
-    public String join(Member member) {
+    public void join(Member member) {
         memberRepository.findByLoginId(member.getLoginId())
                 .ifPresent(m -> {
                     throw new IllegalStateException();
@@ -44,7 +43,6 @@ public class MemberService {
         Cart cart = Cart.createCart(member);
         cartRepository.save(cart);
         log.info("카트 {}", cart);
-        return member.getLoginId();
     }
 
     public void validateMember(Member member, BindingResult bindingResult) {
@@ -85,24 +83,21 @@ public class MemberService {
                 new BadCredentialsException("잘못된 계정 정보입니다."));
     }
 
-    public Member updateMember(Member member) {
+    public void updateMember(Member member) {
         Member newMember = findById(member.getId());
         newMember.setName(member.getName());
         newMember.setPhone(member.getPhone());
         newMember.setAddress(member.getAddress());
         memberRepository.save(newMember);
-        return newMember;
     }
 
     public String findLoginIdByNameAndEmail(String name, String email) {
         return memberRepository.findLoginIdByNameAndEmail(name, email).orElse(null);
     }
 
+
     // 임시 비밀번호 발급
     public String findPw(FindPwRequest request) {
-        Dotenv dotenv = Dotenv.load();
-        String mailUsername = dotenv.get("mail_username");
-
         Member member = findByLoginId(request.getLoginId());
 
         if(!member.getEmail().equals(request.getEmail())){
@@ -132,7 +127,7 @@ public class MemberService {
 
         SimpleMailMessage message = new SimpleMailMessage();
 
-        message.setFrom(mailUsername);
+        message.setFrom(MailConst.mailSenderName);
         message.setTo(response.getReceiveAddress());
         message.setSubject(response.getMailTitle());
         message.setText(response.getMailContent());

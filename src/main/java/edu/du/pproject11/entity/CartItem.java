@@ -29,13 +29,12 @@ public class CartItem {
     private String size;  // 주문 사이즈
 
     public static CartItem createCartItem(Cart cart, Item item, int quantity, String size) {
-        CartItem cartItem = CartItem.builder()
+        return CartItem.builder()
                 .cart(cart)
                 .item(item)
                 .quantity(quantity)
                 .size(size)
                 .build();
-        return cartItem;
     }
 
     @Override
@@ -55,7 +54,7 @@ public class CartItem {
                 "]";
     }
 
-    public Long getItemId(){
-        return item.getId();
+    public void addQuantity(int quantity) {
+        this.quantity += quantity;
     }
 }
